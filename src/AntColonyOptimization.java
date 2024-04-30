@@ -57,6 +57,7 @@ public class AntColonyOptimization {
         return path;
     }
 
+    // condition for if visited
     private boolean notAllVisited(boolean[] visited) {
         for (boolean v : visited) {
             if (!v) return true;
@@ -65,14 +66,40 @@ public class AntColonyOptimization {
     }
 
     private double[] getProbabilities(int currentVertex, AdjacencyListGraph G, boolean[] visited, double a, double b) {
+        List<Edge> edges = G.getEdges(currentVertex); 
+        List<Double> probabilitiesList = new ArrayList<>();
+
+        double sum = 0.0; 
         
-        
-    
+        for (Edge edge : edges) {
+            if (!visited[edge.getEnd()]) { 
+                double heuristic = 1.0 / edge.getCost(); 
+                double pheromoneLevel = edge.getPheromoneLevel();
+                double numerator = Math.pow(pheromoneLevel, a) * Math.pow(heuristic, b);
+                double denominator = Math.pow(pheromoneLevel, a) + Math.pow(heuristic, b);
+
+                double probability = numerator / denominator; 
+                probabilitiesList.add(probability);
+                sum += probability;
+            }
+        }
+        //normalizing
+        double[] probabilities = new double[probabilitiesList.size()];
+        for (int i = 0; i < probabilities.length; i++) {
+            probabilities[i] = probabilitiesList.get(i) / sum;
+        }
+        return probabilities;
     }
-        
+
+      
     // private Edge chooseNextVertex(double[] probabilities) {
     // }
 
-    
+    public void updatePheromones(AdjacencyListGraph G, double rho) {
+        for (Edge edge : G.getEdges()) { 
+            edge.setPheromoneLevel((1 - rho) * edge.getPheromoneLevel());
+        }
+    }
+        
     
 }

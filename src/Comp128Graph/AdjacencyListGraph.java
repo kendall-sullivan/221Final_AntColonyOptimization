@@ -63,9 +63,9 @@ public class AdjacencyListGraph implements Graph {
         if (V < 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
         this.V = V;
         this.E = 0;
-        adj = (Bag<Integer>[]) new Bag[V];
+        this.adj = (Bag<Integer>[]) new Bag[V];
         for (int v = 0; v < V; v++) {
-            adj[v] = new Bag<Integer>();
+            this.adj[v] = new Bag<Integer>();
         }
     }
 
@@ -85,10 +85,10 @@ public class AdjacencyListGraph implements Graph {
         if (in == null) throw new IllegalArgumentException("argument is null");
         try {
             this.V = in.nextInt();
-            if (V < 0) throw new IllegalArgumentException("number of vertices in a Graph must be nonnegative");
-            adj = (Bag<Integer>[]) new Bag[V];
-            for (int v = 0; v < V; v++) {
-                adj[v] = new Bag<Integer>();
+            if (this.V < 0) throw new IllegalArgumentException("number of vertices in a Graph must be nonnegative");
+            this.adj = (Bag<Integer>[]) new Bag[this.V];
+            for (int v = 0; v < this.V; v++) {
+                this.adj[v] = new Bag<Integer>();
             }
             int E = in.nextInt();
             double weight = in.nextDouble();
@@ -97,9 +97,9 @@ public class AdjacencyListGraph implements Graph {
             for (int i = 0; i < E; i++) {
                 int v = in.nextInt();
                 int w = in.nextInt();
-                validateVertex(v);
-                validateVertex(w);
-                addEdge(v, w, weight, pheromoneLevel);
+                this.validateVertex(v);
+                this.validateVertex(w);
+                this.addEdge(v, w, weight, pheromoneLevel);
             }
         } catch (NoSuchElementException e) {
             throw new IllegalArgumentException("invalid input format in Graph constructor", e);
@@ -116,12 +116,12 @@ public class AdjacencyListGraph implements Graph {
     public AdjacencyListGraph(Graph G) {
         this.V = G.V();
         this.E = G.E();
-        if (V < 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
+        if (this.V < 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
 
         // update adjacency lists
-        adj = (Bag<Integer>[]) new Bag[V];
-        for (int v = 0; v < V; v++) {
-            adj[v] = new Bag<Integer>();
+        this.adj = (Bag<Integer>[]) new Bag[this.V];
+        for (int v = 0; v < this.V; v++) {
+            this.adj[v] = new Bag<Integer>();
         }
 
         for (int v = 0; v < G.V(); v++) {
@@ -131,7 +131,7 @@ public class AdjacencyListGraph implements Graph {
                 reverse.push(w);
             }
             for (int w : reverse) {
-                adj[v].add(w);
+                this.adj[v].add(w);
             }
         }
     }
@@ -142,7 +142,7 @@ public class AdjacencyListGraph implements Graph {
      * @return the number of vertices in this graph
      */
     public int V() {
-        return V;
+        return this.V;
     }
 
     /**
@@ -151,21 +151,21 @@ public class AdjacencyListGraph implements Graph {
      * @return the number of edges in this graph
      */
     public int E() {
-        return E;
+        return this.E;
     }
 
     public List<Edge> getEdges() {
-        return edges;
+        return this.edges;
     }
 
     public Bag<Integer>[] getAdj() {
-        return adj;
+        return this.adj;
     }
 
     // throw an IllegalArgumentException unless {@code 0 <= v < V}
     private void validateVertex(int v) {
-        if (v < 0 || v >= V)
-            throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (V - 1));
+        if (v < 0 || v >= this.V)
+            throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (this.V - 1));
     }
 
     /**
@@ -176,17 +176,19 @@ public class AdjacencyListGraph implements Graph {
      * @throws IllegalArgumentException unless both {@code 0 <= v < V} and {@code 0 <= w < V}
      */
     public void addEdge(int v, int w, double weight, double pheromoneLevel) {
-        if (0 <= w && w < V && 0 <= v && v <= V ){ 
-            E++;
-            adj[v].add(w);
-            adj[w].add(v);
+        if (0 <= w && w < this.V && 0 <= v && v <= this.V ){ 
+            this.E++;
+            this.adj[v].add(w);
+            this.adj[w].add(v);
             Edge edge = new Edge(v, w, weight, pheromoneLevel);
-            edges.add(edge);
+            this.edges.add(edge);
 
         } else {
             throw new IllegalArgumentException("vertex not on graph");
         }
     }
+
+    
 
 
     /**
@@ -197,8 +199,8 @@ public class AdjacencyListGraph implements Graph {
      * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
     public Iterable<Integer> adj(int v) {
-        if (0 <= v && v < V) {
-            return adj[v];
+        if (0 <= v && v < this.V) {
+            return this.adj[v];
         } else {
             throw new IllegalArgumentException("vertex not on graph");
         }
@@ -212,8 +214,8 @@ public class AdjacencyListGraph implements Graph {
      * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
     public int degree(int v) {
-        if (0 <= v && v < V) {
-            return adj[v].size();
+        if (0 <= v && v < this.V) {
+            return this.adj[v].size();
         } else {
             throw new IllegalArgumentException("vertex not on graph");
         }
@@ -228,10 +230,10 @@ public class AdjacencyListGraph implements Graph {
      */
     public String toString() {
         StringBuilder s = new StringBuilder();
-        s.append(V + " vertices, " + E + " edges " + NEWLINE);
-        for (int v = 0; v < V; v++) {
+        s.append(this.V + " vertices, " + this.E + " edges " + NEWLINE);
+        for (int v = 0; v < this.V; v++) {
             s.append(v + ": ");
-            for (int w : adj[v]) {
+            for (int w : this.adj[v]) {
                 s.append(w + " ");
             }
             s.append(NEWLINE);
